@@ -1,0 +1,42 @@
+﻿@model IEnumerable<CascadingDemo.Models.Employee>
+@{
+    ViewData["Title"] = "Employee List";
+}
+
+<div class="container mt-4">
+    <h2>Employee List</h2>
+    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">Register New Employee</a>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Employee Id</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Department</th>
+                <th>Country</th>
+                <th>State</th>
+                <th>City</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var emp in Model)
+            {
+                <tr>
+                    <td>@emp.EmployeeId</td>
+                    <td>@emp.FullName</td>
+                    <td>@emp.Email</td>
+                    <td>@emp.Phone</td>
+                    <td>@emp.Department</td>
+                    <td>@emp.Country?.CountryName</td>
+                    <td>@emp.State?.StateName</td>
+                    <td>@emp.City?.CityName</td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = emp.EmployeeId })" class="btn btn-warning btn-sm">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

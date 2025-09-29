@@ -1,0 +1,239 @@
+﻿@model CascadingDemo.ViewModels.EmployeeCreateViewModel
+
+@{
+    ViewData["Title"] = "Register Employee";
+}
+
+<div class="container mt-5">
+    <!-- Card for better UI -->
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="m-0">Register Employee</h3>
+        </div>
+        <div class="card-body">
+            <!-- Begin Form -->
+            <form asp-action="Create" method="post">
+                <div class="row">
+                    <!-- Full Name -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Phone -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Phone" class="form-label"></label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+
+                    <!-- Department -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Department" class="form-label"></label>
+                        <input asp-for="Department" class="form-control" />
+                        <span asp-validation-for="Department" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Divider / Subtitle -->
+                <hr />
+                <h5 class="mb-3">Location Details</h5>
+
+                <div class="row">
+                    <!-- Country -->
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="CountryId" class="form-label">Country</label>
+                        <select asp-for="CountryId"
+                                class="form-select"
+                                asp-items="Model.Countries"
+                                id="CountryId">
+                            <option value="">Select Country</option>
+                        </select>
+                        <span asp-validation-for="CountryId" class="text-danger"></span>
+                    </div>
+
+                    <!-- State -->
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="StateId" class="form-label">State</label>
+                        <select asp-for="StateId"
+                                class="form-select"
+                                id="StateId">
+                            <option value="">Select State</option>
+                        </select>
+                        <span asp-validation-for="StateId" class="text-danger"></span>
+                    </div>
+
+                    <!-- City -->
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="CityId" class="form-label">City</label>
+                        <select asp-for="CityId"
+                                class="form-select"
+                                id="CityId">
+                            <option value="">Select City</option>
+                        </select>
+                        <span asp-validation-for="CityId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success me-2">
+                        <i class="bi bi-person-plus-fill"></i> Register
+                    </button>
+                    <a class="btn btn-secondary" href="@Url.Action("Index", "Employees")">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+            <!-- End Form -->
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery library for AJAX functionality -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Retrieve preselected values from the model, if any (useful when re-rendering after validation errors)
+        var selectedCountry = $('#CountryId').val();
+        var selectedState = '@Model.StateId';
+        var selectedCity = '@Model.CityId';
+
+        // If a country is already selected, load corresponding States and Cities
+        if (selectedCountry) {
+            // AJAX call to get the list of States for the selected Country
+            $.getJSON('@Url.Action("GetStates")', { countryId: selectedCountry }, function (states) {
+                
+                //Get the State Dropdown which needs to be populated
+                var statesSelect = $('#StateId');
+                
+                // Clear any existing options
+                statesSelect.empty();
+                
+                // Add a default option prompting user selection
+                statesSelect.append('<option value="">Select State</option>');
+                
+                // Populate the dropdown with retrieved states
+                // The index parameter represents the current iteration number (or position) in the array being iterated over.
+                $.each(states, function (index, state) {
+
+                    // 'index' holds the current iteration number (0, 1, 2, ...)
+                    // 'state' is the current state object
+                    // In this code, index is not used directly, but it's available if needed.
+
+                    var option = $('<option/>', {
+                        value: state.value,
+                        text: state.text
+                    });
+                    // If the state matches the preselected state, mark it as selected
+                    if (state.value == selectedState) {
+                        option.prop('selected', true);
+                    }
+                    statesSelect.append(option);
+                });
+
+                // If a state was preselected, load its corresponding Cities
+                if (selectedState) {
+
+                    // AJAX call to get the list of Cities for the selected State
+                    $.getJSON('@Url.Action("GetCities")', { stateId: selectedState }, function (cities) {
+                        
+                        //Get the City Dropdown which needs to be populated
+                        var citiesSelect = $('#CityId');
+                        
+                        // Clear any existing options
+                        citiesSelect.empty();
+
+                        // Add a default option prompting user selection
+                        citiesSelect.append('<option value="">Select City</option>');
+
+                        // Populate the dropdown with retrieved cities
+                        // The index parameter represents the current iteration number (or position) in the array being iterated over.
+                        $.each(cities, function (index, city) {
+                            var option = $('<option/>', {
+                                value: city.value,
+                                text: city.text
+                            });
+                            // If the city matches the preselected city, mark it as selected
+                            if (city.value == selectedCity) {
+                                option.prop('selected', true);
+                            }
+                            citiesSelect.append(option);
+                        });
+                    });
+                }
+            });
+        }
+
+        // Event handler: When the Country dropdown changes
+        $('#CountryId').change(function () {
+
+            //Get the Selected Country Dropdown Value
+            var countryId = $(this).val();
+            
+            // AJAX call to load States based on the selected Country
+            $.getJSON('@Url.Action("GetStates")', { countryId: countryId }, function (states) {
+                
+                //Get the State Dropdown which needs to be populated
+                var statesSelect = $('#StateId');
+
+                // Clear the States dropdown
+                statesSelect.empty();
+
+                // Add a default option prompting user selection
+                statesSelect.append('<option value="">Select State</option>');
+                
+                // Populate with new state options
+                // The index parameter represents the current iteration number (or position) in the array being iterated over.
+                $.each(states, function (index, state) {
+                    statesSelect.append($('<option/>', {
+                        value: state.value,
+                        text: state.text
+                    }));
+                });
+
+                // Clear the Cities dropdown as the State selection has changed
+                $('#CityId').empty().append('<option value="">Select City</option>');
+            });
+        });
+
+        // Event handler: When the State dropdown changes
+        $('#StateId').change(function () {
+
+            //Get the Selected State Dropdown Value
+            var stateId = $(this).val();
+
+            // AJAX call to load Cities based on the selected State
+            $.getJSON('@Url.Action("GetCities")', { stateId: stateId }, function (cities) {
+                
+                //Get the City Dropdown which needs to be populated
+                var citiesSelect = $('#CityId');
+
+                // Clear the Cities dropdown
+                citiesSelect.empty();
+
+                // Add a default option prompting user selection
+                citiesSelect.append('<option value="">Select City</option>');
+
+                // Populate with new city options
+                // The index parameter represents the current iteration number (or position) in the array being iterated over.
+                $.each(cities, function (index, city) {
+                    citiesSelect.append($('<option/>', {
+                        value: city.value,
+                        text: city.text
+                    }));
+                });
+            });
+        });
+    });
+</script>
