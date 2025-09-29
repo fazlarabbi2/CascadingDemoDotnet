@@ -118,7 +118,7 @@ namespace CascadingDemo.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        // GET: Employees/Index
+
         public async Task<IActionResult> Index()
         {
             var employees = await _context.Employees
@@ -130,7 +130,6 @@ namespace CascadingDemo.Controllers
             return View(employees);
         }
 
-        // JSON endpoint: Get States for a Country
         [HttpGet]
         public IActionResult GetStates(int countryId)
         {
@@ -138,7 +137,6 @@ namespace CascadingDemo.Controllers
             return Json(new SelectList(states, "StateId", "StateName"));
         }
 
-        // JSON endpoint: Get Cities for a State
         [HttpGet]
         public IActionResult GetCities(int stateId)
         {

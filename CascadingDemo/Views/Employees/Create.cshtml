@@ -53,10 +53,7 @@
                     <!-- Country -->
                     <div class="col-md-4 mb-3">
                         <label asp-for="CountryId" class="form-label">Country</label>
-                        <select asp-for="CountryId"
-                                class="form-select"
-                                asp-items="Model.Countries"
-                                id="CountryId">
+                        <select asp-for="CountryId" class="form-select" asp-items="Model.Countries" id="CountryId">
                             <option value="">Select Country</option>
                         </select>
                         <span asp-validation-for="CountryId" class="text-danger"></span>
@@ -65,9 +62,7 @@
                     <!-- State -->
                     <div class="col-md-4 mb-3">
                         <label asp-for="StateId" class="form-label">State</label>
-                        <select asp-for="StateId"
-                                class="form-select"
-                                id="StateId">
+                        <select asp-for="StateId" class="form-select" id="StateId">
                             <option value="">Select State</option>
                         </select>
                         <span asp-validation-for="StateId" class="text-danger"></span>
@@ -76,9 +71,7 @@
                     <!-- City -->
                     <div class="col-md-4 mb-3">
                         <label asp-for="CityId" class="form-label">City</label>
-                        <select asp-for="CityId"
-                                class="form-select"
-                                id="CityId">
+                        <select asp-for="CityId" class="form-select" id="CityId">
                             <option value="">Select City</option>
                         </select>
                         <span asp-validation-for="CityId" class="text-danger"></span>
